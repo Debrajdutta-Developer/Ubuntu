@@ -18,7 +18,8 @@ log "Starting Kali Codespaces desktop services."
 # Start PostgreSQL and ensure the default cluster is online.
 if ! pg_lsclusters --no-header | grep -q .; then
   log "No PostgreSQL cluster found; creating the default cluster."
-  pg_createcluster 16 main
+  PG_MAJOR="$(pg_config --version | awk '{print $2}' | cut -d. -f1)"
+  pg_createcluster "$PG_MAJOR" main
 fi
 service postgresql start
 pg_lsclusters
