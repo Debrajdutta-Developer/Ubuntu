@@ -41,7 +41,8 @@ RUN if ! command -v tightvncserver >/dev/null 2>&1; then \
 # Ensure PostgreSQL has a default cluster. Debian/Kali package installation
 # normally creates one, but this also covers images where post-install did not.
 RUN if ! pg_lsclusters --no-header | grep -q .; then \
-      pg_createcluster --start 16 main; \
+      PG_MAJOR="$(pg_config --version | awk '{print $2}' | cut -d. -f1)"; \
+      pg_createcluster --start "$PG_MAJOR" main; \
     fi \
     && sed -ri "s/^#?listen_addresses\s*=.*/listen_addresses = 'localhost'/" /etc/postgresql/*/main/postgresql.conf
 
