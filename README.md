@@ -1,54 +1,48 @@
-# Kali Linux Full GUI Environment
+# Ubuntu 24.04 XFCE + Google Antigravity Desktop
 
-A GitHub Codespaces development machine built from the official Kali Rolling image, with XFCE desktop streamed to the browser through noVNC.
+A GitHub Codespaces workstation based on Ubuntu 24.04 LTS. It streams a full XFCE desktop into a browser using TigerVNC and noVNC, with the official standalone Google Antigravity IDE installed in the image.
 
-## What is included
+## Included
 
-- Kali Linux Rolling with `kali-linux-headless`
-- XFCE4 desktop with compositing disabled for smoother browser rendering
-- TigerVNC server on localhost port 5901, exposed through the compatible `tightvncserver` command
+- Ubuntu 24.04 LTS (x86_64 Codespaces host)
+- XFCE4 desktop, configured without compositing for smoother remote display
+- TigerVNC bound to localhost only
 - noVNC + websockify browser gateway on port 8080
-- Firefox ESR and Chromium
-- PostgreSQL with database `kalidev` and role `kaliadmin`
-- Git, Git LFS, curl, wget, Python 3, pip, venv, Node.js, npm, compiler toolchain and common utilities
-- VS Code extensions installed by the Codespaces devcontainer configuration
+- Google Antigravity standalone IDE for Linux x64
+- Firefox from Mozilla's official Linux archive for browser-based sign-in
+- Git, Git LFS, OpenSSH client, Python 3, pip, venv, Node.js, npm, compiler toolchain and common utilities
+- Non-root `codespace` user
+- Persistent home at `/workspaces/.cloud-home` so IDE settings and login state survive Codespaces container rebuilds
 
-## Start
+## Start the desktop
 
-1. Open this repository in GitHub Codespaces.
-2. Wait for the dev container build and startup to finish.
-3. In the Codespaces **Ports** tab, open port **8080**. It is configured as private and should auto-open in the browser.
-4. Enter the VNC password when noVNC asks for it.
+1. Open this repository in GitHub Codespaces using the `ubuntu-24.04-antigravity-desktop` branch.
+2. Wait for the dev container image to build and the startup script to finish.
+3. Open the **Ports** tab in Codespaces.
+4. Open forwarded port **8080**. It is configured as private.
+5. Enter the VNC password when noVNC asks for it.
 
-Read the generated VNC password in the Codespace terminal:
-
-```bash
-cat /root/.vnc-password
-```
-
-The PostgreSQL password is generated separately and stored root-only:
+Read the VNC password from the Codespace terminal:
 
 ```bash
-cat /root/.kali-db-password
+cat /workspaces/.cloud-home/.vnc-password
 ```
 
-Database connection details:
+After the desktop appears, open **Antigravity IDE** from the XFCE Applications menu, or run:
 
-- Host: `127.0.0.1`
-- Port: `5432`
-- Database: `kalidev`
-- User: `kaliadmin`
+```bash
+antigravity-ide
+```
+
+Complete Google sign-in inside the desktop. If the IDE asks for a browser, use Firefox from the Applications menu.
 
 ## Rebuild
 
-After changing any file under `.devcontainer/`, run **Codespaces: Rebuild Container** from the VS Code web Command Palette. A full rebuild is only needed if the normal rebuild reuses a broken cached image.
+After changing files under `.devcontainer/`, run **Codespaces: Rebuild Container** from the VS Code web Command Palette.
 
-## Security and operational notes
+## Important limitations
 
-- VNC listens on localhost only. Do not expose port 5901 publicly.
-- Port 8080 is configured as private in Codespaces.
-- VNC authentication is enabled. No password bypass or shared hard-coded password is used.
-- Password files are root-only and live inside the Codespace container.
-- Codespaces is a cloud development environment, not an always-on server. Stopping/deleting the Codespace affects its compute lifecycle; keep important work committed and pushed to GitHub.
-- Kali security tools must only be used on systems and networks you own or are explicitly authorized to test.
-- Kali Rolling package versions change over time. The Docker build log is the source of truth if a package is renamed or temporarily unavailable.
+- GitHub Codespaces is a development environment, not an always-on cloud server. It can stop after inactivity and has monthly included usage limits. It is not a free, permanent 24/7 workstation.
+- The workspace repository and the sibling `/workspaces/.cloud-home` volume are intended to preserve project data and IDE settings across container rebuilds. Keep important source changes committed and pushed to GitHub.
+- Port 8080 must remain **Private**. Do not expose VNC port 5901 publicly.
+- The standalone IDE download is pinned to the official Linux x64 release archive. Update the version and archive URL together when upgrading.
