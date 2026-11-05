@@ -11,7 +11,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # browsers, database, and common development toolchains in one layer.
 RUN apt-get update && apt-get install -y --no-install-recommends \
       kali-linux-headless \
-      xfce4 xfce4-goodies dbus-x11 dbus-x11 \
+      xfce4 xfce4-goodies dbus-x11 \
       tigervnc-standalone-server tigervnc-tools \
       novnc websockify \
       firefox-esr chromium \
