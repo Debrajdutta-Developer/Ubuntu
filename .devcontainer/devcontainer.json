@@ -1,19 +1,23 @@
 {
-  "name": "Kali Linux Full GUI Environment",
+  "name": "Ubuntu 24.04 XFCE + Antigravity Desktop",
   "build": {
     "dockerfile": "Dockerfile",
     "context": ".."
   },
   "workspaceFolder": "/workspaces/Ubuntu",
+  "containerEnv": {
+    "HOME": "/workspaces/.cloud-home",
+    "DISPLAY": ":1"
+  },
   "forwardPorts": [8080],
   "portsAttributes": {
     "8080": {
-      "label": "Kali Linux GUI Launcher",
+      "label": "Ubuntu XFCE Desktop (noVNC)",
       "onAutoForward": "openBrowser",
       "visibility": "private"
     }
   },
-  "remoteUser": "root",
+  "remoteUser": "codespace",
   "overrideCommand": false,
   "shutdownAction": "stopContainer",
   "customizations": {
