@@ -1,27 +1,54 @@
-# Ubuntu Cloud Workspace
+# Kali Linux Full GUI Environment
 
-This repository is intended for a **cloud-hosted Linux workspace**.
+A GitHub Codespaces development machine built from the official Kali Rolling image, with XFCE desktop streamed to the browser through noVNC.
 
-## Design requirement
+## What is included
 
-- All project source code, packages, workspaces, and runtime data must live on cloud storage / cloud compute.
-- Android phone storage must be used only for the Termux app and temporary SSH/client configuration.
-- Termux is a terminal client only. It must not download or install a Kali root filesystem locally.
-- Do not run local NetHunter, proot-distro, or large package installations on the phone.
+- Kali Linux Rolling with `kali-linux-headless`
+- XFCE4 desktop with compositing disabled for smoother browser rendering
+- TigerVNC server on localhost port 5901, exposed through the compatible `tightvncserver` command
+- noVNC + websockify browser gateway on port 8080
+- Firefox ESR and Chromium
+- PostgreSQL with database `kalidev` and role `kaliadmin`
+- Git, Git LFS, curl, wget, Python 3, pip, venv, Node.js, npm, compiler toolchain and common utilities
+- VS Code extensions installed by the Codespaces devcontainer configuration
 
-## Cloud architecture
+## Start
 
-The intended workflow is:
+1. Open this repository in GitHub Codespaces.
+2. Wait for the dev container build and startup to finish.
+3. In the Codespaces **Ports** tab, open port **8080**. It is configured as private and should auto-open in the browser.
+4. Enter the VNC password when noVNC asks for it.
 
-1. Provision a remote Linux machine or cloud development environment.
-2. Keep the Git repository and working files on that remote machine.
-3. Connect from Android using Termux over SSH.
-4. If a desktop is required, run the desktop and remote-access service on the cloud machine and connect from the phone using a suitable remote desktop client.
+Read the generated VNC password in the Codespace terminal:
 
-## Important
+```bash
+cat /root/.vnc-password
+```
 
-A persistent cloud machine requires an actual cloud compute provider. GitHub repository storage alone is not a running Linux machine. GitHub Actions runners are temporary CI workers and are not a persistent interactive Kali desktop.
+The PostgreSQL password is generated separately and stored root-only:
 
-The existing `.devcontainer/` configuration is retained for reference, but it is Codespaces-specific and is not required by the Termux SSH-client workflow.
+```bash
+cat /root/.kali-db-password
+```
 
-No local Kali installation script is provided in this repository, intentionally.
+Database connection details:
+
+- Host: `127.0.0.1`
+- Port: `5432`
+- Database: `kalidev`
+- User: `kaliadmin`
+
+## Rebuild
+
+After changing any file under `.devcontainer/`, run **Codespaces: Rebuild Container** from the VS Code web Command Palette. A full rebuild is only needed if the normal rebuild reuses a broken cached image.
+
+## Security and operational notes
+
+- VNC listens on localhost only. Do not expose port 5901 publicly.
+- Port 8080 is configured as private in Codespaces.
+- VNC authentication is enabled. No password bypass or shared hard-coded password is used.
+- Password files are root-only and live inside the Codespace container.
+- Codespaces is a cloud development environment, not an always-on server. Stopping/deleting the Codespace affects its compute lifecycle; keep important work committed and pushed to GitHub.
+- Kali security tools must only be used on systems and networks you own or are explicitly authorized to test.
+- Kali Rolling package versions change over time. The Docker build log is the source of truth if a package is renamed or temporarily unavailable.
