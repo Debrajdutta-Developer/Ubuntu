@@ -9,6 +9,13 @@ case "$(uname -m)" in
   *) fail "This setup script currently targets ARM64 Android devices." ;;
 esac
 
+if command -v nethunter >/dev/null 2>&1 || command -v nh >/dev/null 2>&1; then
+  printf '%s\n' "Kali NetHunter already appears to be installed."
+  printf '%s\n' "Start it with: nh"
+  printf '%s\n' "For the desktop, install the official KeX client and follow the README."
+  exit 0
+fi
+
 printf '%s\n' "This will install Kali NetHunter Rootless using the official Kali installer."
 printf '%s\n' "It needs several GB of free storage and a stable internet connection."
 read -r -p "Continue? [y/N] " answer
